@@ -13,5 +13,5 @@ urlpatterns = [
     # Example: path('', main)
     
     # '' means for all endpoints, display the index.html template (our homepage).
-    path('', index)
+    path('', index),
 ]
