@@ -14,4 +14,7 @@ urlpatterns = [
     
     # '' means for all endpoints, display the index.html template (our homepage).
     path('', index),
+    #
+    path('join', index),
+    path('create', index)
 ]
