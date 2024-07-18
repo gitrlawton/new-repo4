@@ -32,7 +32,7 @@ def generate_unique_code():
 class Room(models.Model):
     # Each room will have a code...
     # ...that is sequence of chars, with a max length of 8, and is unique.
-    code = models.CharField(max_length=8, default="", unique=True)
+    code = models.CharField(max_length=8, default=generate_unique_code, unique=True)
     # Each room will have a host...
     # ...that is sequence of chars, with a max length of 50, and is unique.
     host = models.CharField(max_length=50, unique=True)

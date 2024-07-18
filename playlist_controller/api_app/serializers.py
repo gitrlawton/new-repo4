@@ -6,6 +6,7 @@ from rest_framework import serializers
 # Import the model(s) so we can serialize them.
 from .models import Room
 
+# Serializes a Room.
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         # The model we want to serialize.
@@ -14,3 +15,10 @@ class RoomSerializer(serializers.ModelSerializer):
         # We want to include the 'id' field, even though it isn't defined in
         # the models.py file.  This will be its primary key.
         fields = ('id', 'code', 'host', 'guest_can_pause', 'votes_to_skip', 'created_at')
+        
+# Serializes a request (POST request because we'll be creating something new.)
+class CreateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        # Just the fields we want to be serialized.
+        fields = ('guest_can_pause', 'votes_to_skip')
