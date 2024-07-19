@@ -45,7 +45,37 @@ class CreateRoomView(APIView):
             if serializer.is_valid():
                 # Extract the data back into its fields.  Note: these are the
                 # pieces of information need to create a new room.
-                guest_can_pause = serializer.data.guest_can_pause
-                votes_to_skip = serializer.data.votes_to_skip
+                guest_can_pause = serializer.data.get('guest_can_pause')
+                votes_to_skip = serializer.data.get('votes_to_skip')
                 host = self.request.session.session_key
-                
+                # Look for any rooms in the database that have the same host as
+                # the host who is currently trying to create a new room.
+                queryset = Room.objects.filter(host=host)
+                # If one exists...
+                if queryset.exists():
+                    # Set room to the first element in the queryset.
+                    room = queryset[0]
+                    # Set the room's fields to the values from the serializer.
+                    room.guest_can_pause = guest_can_pause
+                    room.votes_to_skip = votes_to_skip
+                    # Save the room to update it, passing it the fields we want
+                    # to update.
+                    room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+                    # Return a response containing a serialized version of the 
+                    # room and a status code OK.
+                    return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
+                # Otherwise one doesn't exist...
+                else:
+                    # Create a new room, setting its fields to the values above.
+                    room = Room(host=host, guest_can_pause=guest_can_pause, votes_to_skip=votes_to_skip)
+                    # Save the room (without fields because we're not updating.)
+                    room.save()
+                    
+                    # Return a response containing a serialized version of the
+                    # room and a status code for CREATED.
+                    return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
+            # Otherwise, serializer is not valid...
+            else:
+                # Return a response detailing error and status code BAD REQUEST.
+                return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+            
