@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -16,41 +16,88 @@ export default class CreateRoomPage extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            guestCanPause: true,
+            votesToSkip: this.defaultVotes,
+        }
+    }
+
+    handleVotesChange(e) {
+        this.setState({
+            votesToSkip: e.target.value,
+        })
+    }
+
+    handleGuestCanPauseChange(e) {
+        this.setState({
+            guestCanPause: e.target.value === 'true' ? true : false,
+        })
     }
 
     render() {
-        return <Grid container spacing={1}>
-            {/* This first Grid item is a text header. */}
-            <Grid item xs={12} align="center">
-                <Typography component="h4" variant="h4">
-                    Create A Room
-                </Typography>
-            </Grid>
-            {/* This Grid item is a text header with two radio buttons */}
-            {/* to control whether user can control playback */}
-            <Grid item xs={12} align="center">
-                <FormControl component="fieldset">
-                    {/* Text header for radio group. */}
-                    <FormHelperText>
-                        <div align="center">
-                            Guest Control of Playback State
-                        </div>
-                    </FormHelperText>
-                    {/* Radio button group. */}
-                    <RadioGroup row defaultValue="true">
-                        {/* Label for radio button with label "Play/Pause". */}
-                        <FormControlLabel 
-                            value="true" control={<Radio color="primary" />}
-                            label="Play/Pause" labelPlacement="bottom"
+        return (
+            <Grid container spacing={1}>
+                {/* This first Grid item is a text header. */}
+                <Grid item xs={12} align="center">
+                    <Typography component="h4" variant="h4">
+                        Create A Room
+                    </Typography>
+                </Grid>
+                {/* This Grid item is a text header with two radio buttons */}
+                {/* to control whether user can control playback */}
+                <Grid item xs={12} align="center">
+                    <FormControl component="fieldset">
+                        {/* Text header for radio group. */}
+                        <FormHelperText>
+                            <div align="center">
+                                Guest Control of Playback State
+                            </div>
+                        </FormHelperText>
+                        {/* Radio button group. */}
+                        <RadioGroup row defaultValue="true" onChange={this.handleGuestCanPauseChange}>
+                            {/* Label for radio button with label "Play/Pause". */}
+                            <FormControlLabel 
+                                value="true" control={<Radio color="primary" />}
+                                label="Play/Pause" labelPlacement="bottom"
+                            />
+                            {/* Label for radio button with label "No Control". */}
+                            <FormControlLabel 
+                                value="false" control={<Radio color="secondary" />}
+                                label="No Control" labelPlacement="bottom"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} align="center">
+                    <FormControl>
+                        <TextField required={true} type="number" onChange={this.handleVotesChange}
+                            defaultValue={this.defaultVotes} 
+                            inputProps={{
+                                min: 1, 
+                                style: {textAlign: "center"},
+                                }} 
                         />
-                        {/* Label for radio button with label "No Control". */}
-                        <FormControlLabel 
-                            value="false" control={<Radio color="secondary" />}
-                            label="No Control" labelPlacement="bottom"
-                        />
-                    </RadioGroup>
-                </FormControl>
+                        <FormHelperText>
+                            <div align="center">
+                                Votes Required To Skip Song
+                            </div>
+                        </FormHelperText>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} align="center">
+                    <Button color="primary" variant="contained">
+                        Create A Room
+                    </Button>
+                </Grid>
+                <Grid item xs={12} align="center">
+                    {/* to="/" is the path we want the button to link to. */}
+                    <Button color="secondary" variant="contained" to="/"
+                        component={Link}
+                    >
+                        Back
+                    </Button>
+                </Grid>
             </Grid>
-        </Grid>;
+        );
     }
 }
