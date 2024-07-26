@@ -16,5 +16,5 @@ urlpatterns = [
     # '' means all endpoints,
     # will be forwarded to the user-created urls.py file in the frontend_app 
     # folder.
-    path('', include('frontend_app.urls'))
+    path('', include('frontend_app.urls')),
 ]

@@ -17,4 +17,6 @@ urlpatterns = [
     #
     path('join', index),
     path('create', index),
+    # The dynamic path for adding our room code to the url.
+    path('room/<str:roomCode>', index),
 ]
