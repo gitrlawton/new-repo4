@@ -29,6 +29,39 @@ class RoomView(generics.ListAPIView):
 # Note: After defining the view, we need to go to urls.py inside the api_app
 # directory and link this view toa url.
 
+# When we call the GetRoom view with a GET request, we need to pass a parameter
+# in the url named code.  That code will be the room we are trying to get.
+class GetRoom(APIView):
+    serializer_class = RoomSerializer
+    lookup_url_kawrg = 'code'
+    
+    def get(self, request, format=None):
+        # request.GET will return a dictionary of all the parameters passed in
+        # the URL string of a GET request.
+        # .get(self.lookup_url_kawrg) will retrieve from that dictionary the
+        # value of the self.lookup_url_kawg parameter.  It will then be stored
+        # as the code.
+        code = request.GET.get(self.lookup_url_kawrg)
+        # If code contains a value...
+        if code != None:
+            # Filter all the rooms for the one where the room's code = the code.
+            # Store that room in room.  Room is a list.
+            room = Room.objects.filter(code=code)
+            # If there was a room stored, its length will be greater than 0.
+            if len(room) > 0:
+                # Serialize the room and extract its data (a dictionary).
+                data = RoomSerializer(room[0]).data
+                # Add a new key, "is_host", to the room's dictionary.
+                # See if the user who sent the GET request is the host of the room
+                # whose code matches.  If yes, the value is True, else, False.
+                data["is_host"] = self.request.session.session_key == room[0].host
+
+                return Response(data, status=status.HTTP_200_OK)
+            
+            return Response({'Room Not Found': 'Invalid Room Code.'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'Bad Request': 'Code parameter not found in request'}, status=status.HTTP_400_BAD_REQUEST)
+
 class CreateRoomView(APIView):
     serializer_class = CreateRoomSerializer
     
