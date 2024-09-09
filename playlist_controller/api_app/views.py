@@ -26,8 +26,8 @@ class RoomView(generics.ListAPIView):
     querySet = Room.objects.all()
     serializer_class = RoomSerializer
     
-# Note: After defining the view, we need to go to urls.py inside the api_app
-# directory and link this view toa url.
+    # Note: After defining the view, we need to go to urls.py inside the api_app
+    # directory and link this view to a url.
 
 # When we call the GetRoom view with a GET request, we need to pass a parameter
 # in the url named code.  That code will be the room we are trying to get.
@@ -61,6 +61,10 @@ class GetRoom(APIView):
             return Response({'Room Not Found': 'Invalid Room Code.'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'Bad Request': 'Code parameter not found in request'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Note: After defining the view, we need to go to urls.py inside the api_app
+        # directory and link this view to a url.
+
 
 class CreateRoomView(APIView):
     serializer_class = CreateRoomSerializer
