@@ -65,6 +65,25 @@ class GetRoom(APIView):
         # Note: After defining the view, we need to go to urls.py inside the api_app
         # directory and link this view to a url.
 
+class JoinRoom(APIView):
+    lookup_url_kawrg = 'code'
+    
+    def post(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            # Create a new session.
+            self.request.session.create()
+            
+        code = request.data.get(self.lookup_url_kawrg)
+        if code != None:
+            room_result = Room.objects.filter(code=code)
+            if len(room_result) > 0:
+                room = room_result[0]
+                self.request.session["room_code"] = code
+                return Response({"message": "Room Joined!"}, status=status.HTTP_200_OK)
+            
+            return Response({"Bad Request": "Invalid Room Code"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({"Bad Request": "Invalid post data, did not find a room"}, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateRoomView(APIView):
     serializer_class = CreateRoomSerializer
