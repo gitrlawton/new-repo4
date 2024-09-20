@@ -59,7 +59,32 @@ export default class RoomJoinPage extends Component {
     });
   }
 
+  // Send a request and have it redirect us to the right page
+  // if request is valid.
   roomButtonPressed() {
-    console.log(this.state.roomCode);
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: this.state.roomCode,
+      }),
+    };
+
+    // Send the request
+    fetch("/api/join-room", requestOptions)
+      .then((response) => {
+        // If we successfully joined the room...
+        if (response.ok) {
+          // Redirect to the room.
+          this.props.history.push(`/room/${this.state.roomCode}`);
+        } else {
+          this.setState({ error: "Room not found." });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }

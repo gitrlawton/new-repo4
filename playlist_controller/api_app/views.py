@@ -117,6 +117,8 @@ class CreateRoomView(APIView):
                     # Save the room to update it, passing it the fields we want
                     # to update.
                     room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+                    
+                    self.request.session['room_code'] = room.code
                     # Return a response containing a serialized version of the 
                     # room and a status code OK.
                     return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
@@ -127,6 +129,7 @@ class CreateRoomView(APIView):
                     # Save the room (without fields because we're not updating.)
                     room.save()
                     
+                    self.request.session['room_code'] = room.code
                     # Return a response containing a serialized version of the
                     # room and a status code for CREATED.
                     return Response(RoomSerializer(room).data, status=status.HTTP_201_CREATED)
