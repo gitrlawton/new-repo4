@@ -14,6 +14,8 @@ from rest_framework.response import Response
 # Gives us access to http status codes which we'll use with our response.
 from rest_framework import status
 
+from django.http import JsonResponse
+
 # Create your views here.
 
 # This is an API View.  It inherits from a generic API view.
@@ -137,4 +139,16 @@ class CreateRoomView(APIView):
             else:
                 # Return a response detailing error and status code BAD REQUEST.
                 return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserInRoom(APIView):
+    def get(self, request, format=None):
+        # Checking if a user has a current session.  If it doesn't...
+        if not self.request.session.exists(self.request.session.session_key):
+            # Create a new session.
+            self.request.session.create()
             
+        data = {
+            "code": self.request.session.get("room_code")
+        }
+        
+        return JsonResponse(data, status=status.HTTP_200_OK)
