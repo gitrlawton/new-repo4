@@ -14,10 +14,24 @@ import { Grid, Button, ButtonGroup, Typography } from "@material-ui/core";
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      roomCode: null,
+    };
   }
 
   // Lifecycle method.
-  async componentDidMount() {}
+  async componentDidMount() {
+    // Send a GET request to the '/api/user-in-room' endpoint.
+    fetch("/api/user-in-room")
+      .then((response) => response.json()) // When the server responds, convert the response to a JSON object
+      .then((data) => {
+        // Refer to the JSON object (response) as "data" and...
+        // Update the component's state with the room code retrieved from the response.
+        this.setState({
+          roomCode: data.code,
+        });
+      });
+  }
 
   // JSX to be displayed when we visit the "/" endpoint.
   renderHomePage() {
@@ -66,9 +80,17 @@ export default class HomePage extends Component {
       // '/create' is actually visited.
       <Router>
         <Switch>
-          <Route exact path="/">
-            {this.renderHomePage()}
-          </Route>
+          <Route
+            exact
+            path="/"
+            render={() => {
+              return this.state.roomCode ? (
+                <Redirect to={`/room/${this.state.roomCode}`} />
+              ) : (
+                this.renderHomePage()
+              );
+            }}
+          />
           <Route path="/join" component={RoomJoinPage} />
           <Route path="/create" component={CreateRoomPage} />
           {/* The semi-colon denotes a placeholder variable. */}
