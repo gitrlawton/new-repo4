@@ -152,3 +152,4 @@ class UserInRoom(APIView):
         }
         
         return JsonResponse(data, status=status.HTTP_200_OK)
+    
