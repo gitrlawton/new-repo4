@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Grid, Button, Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 export default class Room extends Component {
   constructor(props) {
@@ -27,7 +26,18 @@ export default class Room extends Component {
       });
   }
 
-  leaveButtonPressed() {}
+  leaveButtonPressed() {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    fetch("/api/leave-room", requestOptions).then((_response) => {
+      // Redirect to the homepage.
+      this.props.history.push("/");
+    });
+  }
 
   render() {
     return (
@@ -53,7 +63,11 @@ export default class Room extends Component {
           </Typography>
         </Grid>
         <Grid item sx={12} align="center">
-          <Button variant="contained" color="secondary" to="/" component={Link}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={this.leaveButtonPressed}
+          >
             Leave Room
           </Button>
         </Grid>
