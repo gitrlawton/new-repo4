@@ -22,3 +22,12 @@ class CreateRoomSerializer(serializers.ModelSerializer):
         model = Room
         # Just the fields we want to be serialized.
         fields = ('guest_can_pause', 'votes_to_skip')
+        
+# Serializes a request (PATCH request because we'll be updating something.)
+class UpdateRoomSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(validators=[])
+    
+    class Meta:
+        model = Room
+        # Just the fields we want to be serialized.
+        fields = ('guest_can_pause', 'votes_to_skip', 'code')
