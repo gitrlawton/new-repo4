@@ -8,10 +8,12 @@ export default class Room extends Component {
       votesToSkip: 2,
       guestCanPause: false,
       isHost: false,
+      showSettings: false,
     };
     this.roomCode = this.props.match.params.roomCode;
     this.getRoomDetails(); // Update the state
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
+    this.updateShowSettings = this.updateShowSettings.bind(this);
   }
 
   getRoomDetails() {
@@ -46,6 +48,26 @@ export default class Room extends Component {
     });
   }
 
+  updateShowSettings(value) {
+    this.setState({
+      showSettings: value,
+    });
+  }
+
+  renderSettingsButton() {
+    return (
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.updateShowSettings(true)}
+        >
+          Settings
+        </Button>
+      </Grid>
+    );
+  }
+
   render() {
     return (
       <Grid container spacing={1}>
@@ -64,6 +86,7 @@ export default class Room extends Component {
             Guest Can Pause: {this.state.guestCanPause.toString()}
           </Typography>
         </Grid>
+        {this.state.isHost ? this.renderSettingsButton() : null}
         <Grid item sx={12} align="center">
           <Typography variant="h6" component="h6">
             Host: {this.state.isHost.toString()}
